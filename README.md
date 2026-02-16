@@ -1,12 +1,12 @@
 # Netflix Clone Team5
 
-Next.js(App Router) + TypeScript 기반 넷플릭스 클론 프로젝트입니다.
+Next.js(App Router) + JavaScript 기반 넷플릭스 클론 프로젝트입니다.
 
 ## Tech Stack
 
 - Next.js 16
 - React 19
-- TypeScript
+- JavaScript
 - ESLint
 - Tailwind CSS
 - Axios
@@ -63,7 +63,7 @@ src/
   - README 작성
   - 프로젝트 세팅
   - Next.js 구조 설정
-  - TypeScript 타입 정의
+  - JavaScript 기반 초기 구조 정리
 - 최희원 - 2/18 12:00까지
   - API 통신 로직 및 데이터 구성
 - 김다은 - 2/21 12:00까지
