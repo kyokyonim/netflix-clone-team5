@@ -1,12 +1,12 @@
 # Netflix Clone Team5
 
-Next.js(App Router) + TypeScript 기반 넷플릭스 클론 프로젝트입니다.
+Next.js(App Router) + JavaScript 기반 넷플릭스 클론 프로젝트입니다.
 
 ## Tech Stack
 
 - Next.js 16
 - React 19
-- TypeScript
+- JavaScript
 - ESLint
 - Tailwind CSS
 - Axios
@@ -56,6 +56,15 @@ src/
 - `feat/<name>-<feature>`: 개인 기능 작업 브랜치 (예: `feat/heewon-api-logic`)
 - `fix/<name>-<issue>`: 버그 수정 브랜치
 
+## Collaboration Flow (GitHub)
+
+1. 이슈 생성 (Bug report / Feature request 템플릿 사용)
+2. `develop`에서 작업 브랜치 생성
+3. 작업 후 커밋/푸시
+4. `develop` 대상으로 Pull Request 생성 (PR 템플릿 사용)
+5. 리뷰 후 `develop` 머지
+6. 배포 시점에 `develop -> main` PR 머지
+
 ## Team Roles & Timeline
 
 - 정윤서(팀장) - 2/15~2/16
@@ -63,7 +72,7 @@ src/
   - README 작성
   - 프로젝트 세팅
   - Next.js 구조 설정
-  - TypeScript 타입 정의
+  - JavaScript 기반 초기 구조 정리
 - 최희원 - 2/18 12:00까지
   - API 통신 로직 및 데이터 구성
 - 김다은 - 2/21 12:00까지
