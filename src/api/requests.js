@@ -1,4 +1,5 @@
 const requests = {
+  // 기존 Row fetchUrl 방식에서도 쓸 수 있음
   fetchNowPlaying: "/movie/now_playing",
   fetchNetflixOriginals: "/discover/tv?with_networks=213",
   fetchTrending: "/trending/all/week",
@@ -8,6 +9,19 @@ const requests = {
   fetchHorrorMovies: "/discover/movie?with_genres=27",
   fetchRomanceMovies: "/discover/movie?with_genres=10749",
   fetchDocumentaries: "/discover/movie?with_genres=99",
+
+  // 새 구조(useHomeFeed/buildHomeFeed에서 쓰는 키들)
+  fetchHero: "/trending/all/week",
+  fetchKrSeriesPopular:
+    "/discover/tv?with_original_language=ko&sort_by=popularity.desc",
+  fetchKrMoviesPopular:
+    "/discover/movie?with_original_language=ko&sort_by=popularity.desc",
+  fetchUsDrama:
+    "/discover/tv?with_original_language=en&sort_by=popularity.desc",
+  fetchTrendingMovies: "/trending/movie/week",
+  fetchRomancePopular:
+    "/discover/movie?with_genres=10749&sort_by=popularity.desc",
 };
 
 export default requests;
+

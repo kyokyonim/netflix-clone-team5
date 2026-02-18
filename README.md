@@ -1,38 +1,88 @@
-## Data Contract (MediaCard)
+## [API Layer Refactor] 데이터 구조 정리 및 타입 계층 분리
 
-(🔸변경) UI 레이어에서는 TMDB raw 응답 필드를 직접 사용하지 않습니다.  
-(🔸변경) 모든 화면 컴포넌트는 정규화된 `MediaCard` 타입만 사용.
+UI와 데이터 계층을 분리하고,
+TMDB raw 데이터 의존 구조를 제거하기 위한 API 레이어 리팩토링.
 
-### UI Allowed Fields
-- `posterUrl`
-- `backdropUrl`
-- `title`
-- `mediaType`
+#### ✅ API 레이어 분리
 
-### UI Forbidden Raw Fields
-- `poster_path`
-- `backdrop_path`
-- `title` / `name` 분기 직접 처리
+기존:
 
-## Mapping Rules
+```
+컴포넌트 → axios 직접 호출 → raw TMDB 데이터 사용
+```
 
-raw TMDB 응답 -> `MediaCard` 변환은 어댑터(매핑 레이어)에서만 수행.  
-컴포넌트 내부에서 raw 응답 구조를 해석하지 않음.
+변경:
 
-- `title`: `title ?? name ?? "제목 없음"`
-- `mediaType`: raw 값 사용, 없으면 컨텍스트 기준으로 `movie` 또는 `tv` 보정
-- `posterUrl`/`backdropUrl`: 경로가 없으면 `null` 반환 후 UI fallback 표시
+```
+UI → hooks → api → mapper → TMDB
+```
 
-## UI Rendering Rules
+* `api/tmdb.ts` : TMDB 호출 전담
+* `api/homefeed.ts` : 홈 피드 구성 로직 분리
+* `api/mapper.ts` : raw 데이터 정규화
 
-- 이미지(`posterUrl`, `backdropUrl`)가 `null`이면 플레이스홀더 UI를 표시합니다.
-- `loading`, `error`, `empty` 상태를 Row/모달에서 명시적으로 처리합니다.
-- `movie`/`tv` 모두 동일한 `MediaCard` 인터페이스로 렌더링합니다.
+---
 
-## ⭐️PR Checklist⭐️
+#### ✅ 데이터 정규화 도입
 
-- [ ] UI 코드에서 raw TMDB 필드 직접 참조 없음
-- [ ] `movie`/`tv` 모두 홈 피드 정상 렌더링
-- [ ] 모달(트레일러/추천작/출연진) 정상 동작
-- [ ] `loading`/`error`/`empty` 상태 확인
-- [ ] 모바일 레이아웃 깨짐 없음
+UI에서는 더 이상 TMDB raw 필드를 직접 사용하지 않습니다.
+
+예:
+
+* `poster_path` → `posterUrl`
+* `backdrop_path` → `backdropUrl`
+* `title/name` 분기 제거
+* `release_date/first_air_date` 통합
+
+UI는 `MediaCard` 타입 기반 데이터만 사용하도록 구조 통일.
+
+---
+
+#### ✅ 상세 번들 API 도입
+
+단일 상세 호출 → 병렬 번들 호출 구조로 변경
+
+포함:
+
+* detail
+* videos
+* recommendations
+* credits
+
+`fetchDetailBundle()`에서 Promise.all 기반 병렬 처리
+
+---
+
+#### ✅ TypeScript 타입 계층 정리
+
+추가:
+
+* `types/app.ts`
+* `types/tmdb.ts`
+
+계층별 타입 고정:
+
+* `MediaCard`
+* `HomeFeed`
+* `HomeSection`
+* `DetailBundle`
+
+---
+
+주요 변경:
+
+* TMDB raw 필드 직접 사용 제거
+* MediaCard 타입 기반 정규화 도입
+* 홈 피드 병렬 호출 구조 적용
+* 상세 페이지 번들 API 도입
+* 타입 계층 명확화
+
+UI 작업하실 때는
+raw 필드 대신 아래 필드 기준으로 사용해주세요:
+
+* posterUrl
+* backdropUrl
+* title
+* releaseDate
+* mediaType
+
