@@ -206,16 +206,21 @@ JS 파일에서 타입 필요하면 점진적 전환
 UI → hooks → api → mapper → TMDB
 ```
 
-✔ api/tmdb.ts에서 단일 책임 원칙 기반 호출
-✔ fetchList, fetchHero, fetchDetailBundle 분리
-✔ 병렬 호출 (Promise.all) 적용
-✔ 홈 데이터는 buildHomeFeed()에서 전체 구성
+* api/tmdb.ts에서 호출 전담
+
+* mapper.ts에서 raw 데이터 정규화
+
+* buildHomeFeed()에서 홈 데이터 구성
+
+* fetchDetailBundle()로 상세 데이터 병렬 처리
+
+* Promise.all 기반 병렬 호출 적용
 
 👉 API 레이어 분리 및 구조화 완료
 
 ### 2) TypeScript 타입 정의
 
-✔ types/app.ts
+✔ 공통 타입(types/app.ts)
 
 * MediaCard
 
@@ -225,15 +230,15 @@ UI → hooks → api → mapper → TMDB
 
 * DetailBundle
 
-✔ types/tmdb.ts
+✔ TMDB raw 타입(types/tmdb.ts)
 
-* TMDB raw 응답 타입 정의
-
-* TMDBListResponse<T>
+* TMDBListResponse
 
 * TMDBDetail
 
-* TMDBVideosResponse 등
+* TMDBVideosResponse
+
+* TMDBCreditsResponse
 
 ✔ hooks 반환 타입 고정
 ```
@@ -243,6 +248,29 @@ Promise<DetailBundle>
 ```
 👉 계층별 타입 명확화 완료
 
+### 3) Props 계약 명확화
+
+UI는 raw TMDB 필드를 직접 사용하지 않음.
+
+Row
+```
+items: MediaCard[]
+variant?: "default" | "top10"
+```
+
+Banner
+```
+hero: MediaCard | null
+```
+
+Detail
+```
+/detail/:mediaType/:id
+```
+
+movie / tv 모두 대응
+
+mediaType 하드코딩 제거
 
 ##  현재 상태
 
@@ -250,4 +278,10 @@ Promise<DetailBundle>
 * 슬라이더 정상 동작
 * 모달 정상 동작
 * API 연동 정상
+
+## 데이터 흐름
+```
+TMDB → mapper → MediaCard → hooks → Props → UI
+```
+
 
