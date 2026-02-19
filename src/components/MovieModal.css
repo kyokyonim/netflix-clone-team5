@@ -1,0 +1,132 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  
+  .modalSheet {
+    width: min(980px, 100%);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #141414;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    position: relative;
+  }
+  
+  .modalClose {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 0;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-weight: 900;
+    font-size: 16px;
+  }
+  
+  .modalHero {
+    position: relative;
+    height: 420px;
+    background: #111;
+  }
+  
+  .modalHeroImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.9);
+  }
+  
+  .modalHeroFallback {
+    width: 100%;
+    height: 100%;
+    background: #111;
+  }
+  
+  .modalHeroShade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(20,20,20,1) 100%);
+  }
+  
+  .modalHeroContent {
+    position: absolute;
+    left: 34px;
+    right: 34px;
+    bottom: 26px;
+    z-index: 2;
+  }
+  
+  .modalTitle {
+    margin: 0 0 14px;
+    font-size: 44px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+  
+  .modalActions {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .modalPlayBtn {
+    border: 0;
+    cursor: pointer;
+    font-weight: 900;
+    padding: 12px 18px;
+    border-radius: 6px;
+    color: #ffffff;
+  }
+  
+  .modalInfoBtn {
+    border: 0;
+    cursor: pointer;
+    font-weight: 900;
+    padding: 12px 18px;
+    border-radius: 6px;
+    background: rgba(109, 109, 110, 0.7);
+    color: #ffffff;
+  }
+  
+  .modalBody {
+    padding: 22px 34px 30px;
+  }
+  
+  .modalMeta {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+  }
+  
+  .modalDesc {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  
