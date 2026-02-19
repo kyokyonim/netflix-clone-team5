@@ -1,23 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { fetchDetailBundle } from "@/api/tmdb";
 import useHomeFeed from "@/hooks/useHomeFeed";
+import useHeroTrailer from "@/hooks/useHeroTrailer";
 import Row from "@/components/Row";
 import MovieModal from "@/components/MovieModal";
-
-function getPlayableMediaType(item) {
-  if (!item) return null;
-  if (item.mediaType === "movie" || item.mediaType === "tv") return item.mediaType;
-  return null;
-}
 
 export default function Page() {
   const { hero, sections, loading, error } = useHomeFeed();
 
-  // Trailer
-  const [trailerKey, setTrailerKey] = useState(null);
-  const [isMuted, setIsMuted] = useState(true);
+  // ✅ Trailer logic moved to hook (UI → hooks → api → mapper → TMDB)
+  const { trailerKey, isMuted, setIsMuted, play, close } = useHeroTrailer(hero);
 
   // Modal
   const [selectedItem, setSelectedItem] = useState(null);
@@ -38,31 +31,13 @@ export default function Page() {
     );
   }
 
-  if (!hero || !sections.length || !sections[0]?.items?.length) {
+  if (!hero || !sections?.length || !sections[0]?.items?.length) {
     return (
       <main style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
         <div style={{ padding: 60, fontSize: 24 }}>Empty</div>
       </main>
     );
   }
-
-  const handlePlay = async () => {
-    try {
-      const mediaType = getPlayableMediaType(hero);
-      if (!mediaType) {
-        setTrailerKey(null);
-        return;
-      }
-
-      const detail = await fetchDetailBundle(mediaType, hero.id);
-      setTrailerKey(detail.trailerYoutubeKey ?? null);
-    } catch (e) {
-      console.error(e);
-      setTrailerKey(null);
-    }
-  };
-
-  const handleCloseTrailer = () => setTrailerKey(null);
 
   return (
     <main style={{ background: "#000", minHeight: "100vh" }}>
@@ -76,7 +51,7 @@ export default function Page() {
           overflow: "hidden",
         }}
       >
-        {/* backgound */}
+        {/* background */}
         <div
           style={{
             position: "absolute",
@@ -107,15 +82,16 @@ export default function Page() {
             <iframe
               key={`${trailerKey}-${isMuted ? "m1" : "m0"}`}
               title="trailer"
-              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${isMuted ? 1 : 0
-                }&controls=0&playsinline=1&rel=0&modestbranding=1`}
+              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
+                isMuted ? 1 : 0
+              }&controls=0&playsinline=1&rel=0&modestbranding=1`}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
               style={{ width: "100%", height: "100%", border: 0 }}
             />
 
             <button
-              onClick={handleCloseTrailer}
+              onClick={close}
               style={{
                 position: "absolute",
                 top: 90,
@@ -171,7 +147,7 @@ export default function Page() {
             {/* Play Button */}
             <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
               <button
-                onClick={handlePlay}
+                onClick={play}
                 style={{
                   padding: "12px 26px",
                   borderRadius: 6,
@@ -239,6 +215,7 @@ export default function Page() {
                   alignItems: "center",
                   justifyContent: "center",
                   padding: 0,
+                  background: "transparent",
                 }}
               >
                 <img
@@ -284,7 +261,6 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -293,7 +269,7 @@ export default function Page() {
       {/* ROWS */}
       <section style={{ marginTop: -90, paddingBottom: 60 }}>
         {sections.map((row) => (
-          <Row key={row.key}>
+          <Row key={row.key ?? row.title}>
             <h2 style={{ color: "#fff", fontSize: 22, margin: "0 0 12px" }}>
               {row.title}
             </h2>
