@@ -9,7 +9,7 @@ import MovieModal from "@/components/MovieModal";
 
 export default function Page() {
   const [rows, setRows] = useState([]);
-  const [status, setStatus] = useState("loading"); 
+  const [status, setStatus] = useState("loading");
 
   // Trailer
   const [trailerKey, setTrailerKey] = useState(null);
@@ -139,9 +139,8 @@ export default function Page() {
             <iframe
               key={`${trailerKey}-${isMuted ? "m1" : "m0"}`}
               title="trailer"
-              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
-                isMuted ? 1 : 0
-              }&controls=0&playsinline=1&rel=0&modestbranding=1`}
+              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${isMuted ? 1 : 0
+                }&controls=0&playsinline=1&rel=0&modestbranding=1`}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
               style={{ width: "100%", height: "100%", border: 0 }}
@@ -174,7 +173,7 @@ export default function Page() {
             position: "absolute",
             left: 60,
             right: 60,
-            top: 410, 
+            top: 410,
             zIndex: 3,
           }}
         >
@@ -215,6 +214,8 @@ export default function Page() {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
+                  backgroundColor: "#ffffff",
+                  color: "#000",
                 }}
               >
                 <span style={{ fontSize: 18 }}>▶</span> 재생
@@ -258,14 +259,13 @@ export default function Page() {
             {/* Sound */}
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <button
-                aria-label="Volume"
+                aria-label="Sound"
                 onClick={() => setIsMuted((v) => !v)}
                 style={{
                   width: 44,
                   height: 44,
                   borderRadius: "50%",
                   border: "1px solid rgba(255,255,255,0.6)",
-                  background: "rgba(0,0,0,0.25)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -285,22 +285,38 @@ export default function Page() {
                 />
               </button>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  height: 44,
-                  padding: "0 14px",
-                  background: "rgba(0,0,0,0.45)",
-                  borderLeft: "4px solid rgba(255,255,255,0.75)",
-                  color: "#fff",
-                  fontWeight: 900,
-                  fontSize: 16,
-                  letterSpacing: 0.5,
-                }}
-              >
-                15
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: 44,
+                    padding: "0 14px",
+                    background: "rgba(0,0,0,0.45)",
+                    width:"100px",
+                    borderLeft: "4px solid rgba(255,255,255,0.75)",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      background: "#d07a3a",
+                      borderRadius: 6,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 900,
+                      fontSize: 18,
+                      color: "#fff",
+                      lineHeight: 1,
+                    }}
+                  >
+                    15
+                  </div>
+                </div>
               </div>
+
             </div>
           </div>
         </div>

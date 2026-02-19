@@ -83,3 +83,65 @@
     display: block;
   }
   
+  .nav__profileWrap {
+    position: relative;
+  }
+  
+  .nav__profileBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  
+  .nav_profile {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .nav__arrow {
+    object-fit: cover;
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+  
+  .nav__dropdown {
+    position: absolute;
+    right: 0;
+    top: 44px;
+    min-width: 180px;
+    background: rgba(0, 0, 0, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 50;
+    font-size: 14px;
+  }
+  
+  .nav__dropdownItem {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    color: #fff;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  
+  .nav__dropdownItem:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .nav__dropdownBtn {
+    font: inherit;
+  }
+  
