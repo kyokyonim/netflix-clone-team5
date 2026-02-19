@@ -1,13 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./MovieModal.css";
-import axios from "@/api/axios";
-import requests from "@/api/requests";
+import useDetailBundle from "@/hooks/useDetailBundle";
+
+function getPlayableMediaType(item) {
+  if (!item) return undefined;
+  if (item.mediaType === "movie" || item.mediaType === "tv") return item.mediaType;
+  return undefined;
+}
 
 export default function MovieModal({ open, item, onClose }) {
-  const [detail, setDetail] = useState(null);
-  const [detailStatus, setDetailStatus] = useState("idle"); 
+  const mediaType = getPlayableMediaType(item);
+  const { data, loading, error } = useDetailBundle(
+    mediaType,
+    item?.id,
+    open && !!item && !!mediaType
+  );
 
   // ESC 닫기 + 스크롤 잠금
   useEffect(() => {
@@ -25,40 +34,6 @@ export default function MovieModal({ open, item, onClose }) {
       document.body.style.overflow = "";
     };
   }, [open, onClose]);
-
-  // ✅ open + item 바뀔 때 TMDB detail 가져오기
-  useEffect(() => {
-    if (!open || !item) return;
-
-    let canceled = false;
-
-    async function fetchDetail() {
-      try {
-        setDetailStatus("loading");
-        setDetail(null);
-
-        const mediaType = item.mediaType === "tv" ? "tv" : "movie";
-        const res = await axios.get(
-          requests.fetchDetail(mediaType, item.id)
-        );
-
-        if (canceled) return;
-        setDetail(res.data);
-        setDetailStatus("ready");
-      } catch (e) {
-        console.error(e);
-        if (canceled) return;
-        setDetail(null);
-        setDetailStatus("error");
-      }
-    }
-
-    fetchDetail();
-
-    return () => {
-      canceled = true;
-    };
-  }, [open, item]);
 
   if (!open || !item) return null;
 
@@ -90,17 +65,17 @@ export default function MovieModal({ open, item, onClose }) {
 
         <div className="modalBody">
           <div className="modalMeta">
-            <span className="pill">{item.mediaType?.toUpperCase()}</span>
+            <span className="pill">{(item.mediaType || "unknown").toUpperCase()}</span>
             <span className="pill">HD</span>
             <span className="pill">15</span>
           </div>
 
           <p className="modalDesc">
-            {detailStatus === "loading" && "줄거리 불러오는 중..."}
-            {detailStatus === "error" && "줄거리 정보를 불러오지 못했어. (콘솔 확인)"}
-            {detailStatus === "ready" &&
-              (detail?.overview ? detail.overview : "줄거리 정보가 없어요.")}
-            {detailStatus === "idle" && ""}
+            {loading && "줄거리 불러오는 중..."}
+            {!loading && error && "줄거리 정보를 불러오지 못했어. (콘솔 확인)"}
+            {!loading &&
+              !error &&
+              (data?.item?.overview ? data.item.overview : "줄거리 정보가 없어요.")}
           </p>
         </div>
       </div>

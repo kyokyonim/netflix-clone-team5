@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import axios from "@/api/axios";
-import requests from "@/api/requests";
-import { toMediaCardList } from "@/adapters/mediaCard";
+import { useState } from "react";
+import { fetchDetailBundle } from "@/api/tmdb";
+import useHomeFeed from "@/hooks/useHomeFeed";
 import Row from "@/components/Row";
 import MovieModal from "@/components/MovieModal";
 
+function getPlayableMediaType(item) {
+  if (!item) return null;
+  if (item.mediaType === "movie" || item.mediaType === "tv") return item.mediaType;
+  return null;
+}
+
 export default function Page() {
-  const [rows, setRows] = useState([]);
-  const [status, setStatus] = useState("loading");
+  const { hero, sections, loading, error } = useHomeFeed();
 
   // Trailer
   const [trailerKey, setTrailerKey] = useState(null);
@@ -18,39 +22,7 @@ export default function Page() {
   // Modal
   const [selectedItem, setSelectedItem] = useState(null);
 
-  useEffect(() => {
-    async function fetchHome() {
-      try {
-        setStatus("loading");
-
-        const [trendingRes, originalsRes, topRatedRes] = await Promise.all([
-          axios.get(requests.fetchTrending),
-          axios.get(requests.fetchNetflixOriginals),
-          axios.get(requests.fetchTopRated),
-        ]);
-
-        const makeRow = (title, res, contextType) => ({
-          title,
-          items: toMediaCardList(res.data?.results ?? [], contextType),
-        });
-
-        setRows([
-          makeRow("오늘 대한민국 TOP 10 시리즈", trendingRes, undefined),
-          makeRow("Netflix Originals", originalsRes, "tv"),
-          makeRow("Top Rated", topRatedRes, "movie"),
-        ]);
-
-        setStatus("ready");
-      } catch (e) {
-        console.error(e);
-        setStatus("error");
-      }
-    }
-
-    fetchHome();
-  }, []);
-
-  if (status === "loading") {
+  if (loading) {
     return (
       <main style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
         <div style={{ padding: 60, fontSize: 24 }}>Loading...</div>
@@ -58,7 +30,7 @@ export default function Page() {
     );
   }
 
-  if (status === "error") {
+  if (error) {
     return (
       <main style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
         <div style={{ padding: 60, fontSize: 24 }}>Error</div>
@@ -66,7 +38,7 @@ export default function Page() {
     );
   }
 
-  if (!rows.length || !rows[0]?.items?.length) {
+  if (!hero || !sections.length || !sections[0]?.items?.length) {
     return (
       <main style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
         <div style={{ padding: 60, fontSize: 24 }}>Empty</div>
@@ -74,20 +46,16 @@ export default function Page() {
     );
   }
 
-  const hero = rows[0].items[0];
-
   const handlePlay = async () => {
     try {
-      const mediaType = hero.mediaType === "tv" ? "tv" : "movie";
-      const res = await axios.get(requests.fetchVideos(mediaType, hero.id));
-      const list = res.data?.results ?? [];
+      const mediaType = getPlayableMediaType(hero);
+      if (!mediaType) {
+        setTrailerKey(null);
+        return;
+      }
 
-      const picked =
-        list.find((v) => v.site === "YouTube" && v.type === "Trailer") ||
-        list.find((v) => v.site === "YouTube" && v.type === "Teaser") ||
-        list.find((v) => v.site === "YouTube");
-
-      setTrailerKey(picked?.key ?? null);
+      const detail = await fetchDetailBundle(mediaType, hero.id);
+      setTrailerKey(detail.trailerYoutubeKey ?? null);
     } catch (e) {
       console.error(e);
       setTrailerKey(null);
@@ -293,7 +261,7 @@ export default function Page() {
                     height: 44,
                     padding: "0 14px",
                     background: "rgba(0,0,0,0.45)",
-                    width:"100px",
+                    width: "100px",
                     borderLeft: "4px solid rgba(255,255,255,0.75)",
                   }}
                 >
@@ -324,8 +292,8 @@ export default function Page() {
 
       {/* ROWS */}
       <section style={{ marginTop: -90, paddingBottom: 60 }}>
-        {rows.map((row) => (
-          <Row key={row.title}>
+        {sections.map((row) => (
+          <Row key={row.key}>
             <h2 style={{ color: "#fff", fontSize: 22, margin: "0 0 12px" }}>
               {row.title}
             </h2>
