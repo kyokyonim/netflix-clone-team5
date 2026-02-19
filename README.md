@@ -55,6 +55,19 @@ raw TMDB 응답 -> `MediaCard` 변환은 어댑터(매핑 레이어)에서만 �
 - 에셋 및 스타일 반영: 네비게이션/모달/로우 관련 CSS와 아이콘 이미지 리소스 추가
 - Next.js 앱 라우터 반영: `src/app/layout.jsx`, `src/app/page.jsx` 기준으로 홈 화면 구조 통합
 
+#### 김다은 결과 캡처
+![Home Main](docs/screenshot/home-main.png)
+![Home Modal](docs/screenshot/home-modal.png)
+
+#### 김다은 적용 기술
+- `Next.js App Router` 기반 화면 구성 (`layout.jsx`, `page.jsx`)
+- `React Hooks` 상태 관리 (`useState`, `useEffect`)
+- `Axios` 기반 TMDB API 연동
+- `YouTube iframe` 트레일러 재생/음소거 토글
+- `모달 UX` 처리 (ESC 닫기, 오버레이 클릭 닫기, body scroll lock)
+- `CSS 모듈 분리`에 준하는 컴포넌트 단위 스타일 파일 분리 (`Nav.css`, `Row.css`, `MovieModal.css`)
+- `데이터 정규화` 구조 준수 (`MediaCard` 기반 UI 렌더링)
+
 ### 조아영 (22일 오후 12시까지 진행)
 - Dockerfile 작성 및 이미지 빌드
 - AWS S3/EC2 배포 및 테스트
