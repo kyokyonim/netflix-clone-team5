@@ -6,13 +6,12 @@ Next.js App Router와 TMDB API를 활용하여 넷플릭스 UI/UX를 구현한 �
 
 ### 메인 홈 화면
 히어로 섹션 및 카테고리별(Top 10, Netflix Originals, Top Rated) Row 렌더링
-![Main Home](./home-main.jpg)
+![Main Home](docs/screenshots/home-main.png)
 
 ### 상세 모달 화면
 콘텐츠 클릭 시 상세 정보 모달 오픈 및 상태 처리 (Loading/Error/Empty)
-![Detail Modal](./home-modal.jpg)
+![Detail Modal](docs/screenshots/home-modal.png)
 
----
 
 ## 🛠 Tech Stack
 
