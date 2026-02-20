@@ -68,7 +68,7 @@ export default function Page() {
         {/* Shadow */}
         <div
           style={{
-            position: "absolute",
+  
             inset: 0,
             background:
               "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%), linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%)",
