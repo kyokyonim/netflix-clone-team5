@@ -15,6 +15,22 @@ UI 계층과 데이터 계층을 분리해 유지보수성과 확장성을 높�
 
 ![Detail Modal](docs/screenshot/home-modal.png)
 
+### 팀원 추가 수정 캡처 (2026-02-21)
+Row 카드 섹션 가림 이슈 및 헤더 모바일 대응 관련 팀원 공유 캡처
+
+![PR #9 Team Update](https://github.com/user-attachments/assets/109a71f2-eca4-4f9b-bff8-c04016ca3018)
+
+### 2026-02-21 추가 수정 반영 내용 (PR #9)
+- `src/hooks/useHeroTrailer.ts` 신규 추가
+  - 트레일러 재생/닫기 로직을 페이지 컴포넌트에서 분리
+- `src/app/page.jsx`
+  - `useHeroTrailer` 훅 적용
+  - Row key 보강(`row.key ?? row.title`) 및 UI 코드 정리
+- `src/components/Nav.css`
+  - 모바일 구간(`@media (max-width: 768px)`)에서 좌우 패딩 축소 및 메뉴 숨김 처리 추가
+- `src/api/mapper.ts`, `src/api/requests.js`, `src/api/tmdb.ts`
+  - 홈 화면 데이터 매핑/요청 로직 리팩터링 반영
+
 ---
 
 ## 🛠 Tech Stack
