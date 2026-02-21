@@ -1,6 +1,5 @@
 // TMDB 이미지/데이터 정규화 mapper
 import type { MediaCard, MediaType } from "../types/app";
-import type { TMDBListItem } from "../types/tmdb";
 
 export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/";
 
@@ -11,7 +10,7 @@ export function imgUrl(path?: string | null, size: string = "w500"): string | un
 }
 
 // TMDB item에서 media type 추론 (반드시 MediaType만 반환)
-export function inferMediaType(item: TMDBListItem): MediaType {
+export function inferMediaType(item: any): MediaType {
   const mt = item?.media_type;
   if (mt === "movie" || mt === "tv" || mt === "person") return mt;
   if (item?.first_air_date || item?.name || item?.original_name) return "tv";
@@ -20,7 +19,7 @@ export function inferMediaType(item: TMDBListItem): MediaType {
   return "unknown";
 }
 
-export function toMediaCard(item: TMDBListItem): MediaCard {
+export function toMediaCard(item: any): MediaCard {
   const mediaType = inferMediaType(item);
 
   const title: string =
@@ -48,7 +47,7 @@ export function toMediaCard(item: TMDBListItem): MediaCard {
 }
 
 // 배너용(가로 이미지 우선)
-export function toBannerItem(item: TMDBListItem): MediaCard {
+export function toBannerItem(item: any): MediaCard {
   const card = toMediaCard(item);
   return {
     ...card,

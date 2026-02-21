@@ -76,13 +76,13 @@
   }
   
   .nav_profile {
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
     object-fit: cover;
     display: block;
   }
-  
+
   .nav__profileWrap {
     position: relative;
   }
@@ -95,14 +95,6 @@
     background: transparent;
     border: 0;
     padding: 0;
-  }
-  
-  .nav_profile {
-    width: 32px;
-    height: 32px;
-    border-radius: 4px;
-    object-fit: cover;
-    display: block;
   }
   
   .nav__arrow {
@@ -145,3 +137,12 @@
     font: inherit;
   }
   
+  @media (max-width: 768px) {
+    .nav {
+      padding: 0 20px;
+    }
+  
+    .nav__menu {
+      display: none; /* 모바일에서 메뉴 숨기고 햄버거로 대체 */
+    }
+  }
