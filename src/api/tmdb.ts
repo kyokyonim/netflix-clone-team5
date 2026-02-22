@@ -2,29 +2,22 @@
 import axios from "./axios";
 import { toMediaCard, toBannerItem, imgUrl } from "./mapper";
 import type { MediaCard, DetailBundle, MediaType } from "../types/app";
-import type {
-  TMDBListItem,
-  TMDBVideosResponse,
-  TMDBCreditsResponse,
-  TMDBDetail,
-} from "../types/tmdb";
 
-type Params = Record<string, string | number | boolean>;
+type JsonObject = Record<string, unknown>;
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
 
-function asTmdbItemArray(value: unknown): TMDBListItem[] {
-  if (!Array.isArray(value)) return [];
-  return value as TMDBListItem[];
+function isObject(value: unknown): value is JsonObject {
+  return typeof value === "object" && value !== null;
 }
 
-function getResults(data: unknown): TMDBListItem[] {
-  if (!data || typeof data !== "object") return [];
-  const results = (data as { results?: unknown }).results;
-  if (Array.isArray(results)) return asTmdbItemArray(results);
+function getResults(data: unknown): JsonObject[] {
+  if (!isObject(data)) return [];
+  if (Array.isArray(data.results)) return data.results.filter(isObject);
   return [];
 }
 
 // 리스트(섹션) 가져오기 
-export async function fetchList(path: string, params: Params = {}): Promise<MediaCard[]> {
+export async function fetchList(path: string, params: QueryParams = {}): Promise<MediaCard[]> {
   const res = await axios.get(path, { params });
   return getResults(res.data).map(toMediaCard);
 }
@@ -84,14 +77,14 @@ export async function fetchDetailBundle(mediaType: MediaType, id: number | strin
     axios.get(`${base}/${id}/credits`),
   ]);
 
-  const detail: TMDBDetail = (detailRes.data ?? {}) as TMDBDetail;
-  const videosResponse: TMDBVideosResponse = (videosRes.data ?? { results: [] }) as TMDBVideosResponse;
-  const credits: TMDBCreditsResponse = (creditsRes.data ?? {}) as TMDBCreditsResponse;
-  const videos: TmdbVideo[] = videosResponse.results ?? [];
+  const detail = detailRes.data ?? {};
+  const videos: TmdbVideo[] = videosRes.data?.results ?? [];
   const trailerYoutubeKey = pickTrailerYoutubeKey(videos);
 
   const recommendations: MediaCard[] = (recRes.data?.results ?? []).map(toMediaCard);
-  const cast = (credits.cast ?? []).slice(0, 10).map((c) => ({
+
+  const credits = creditsRes.data ?? {};
+  const cast = (credits.cast ?? []).slice(0, 10).map((c: JsonObject) => ({
     id: Number(c?.id ?? 0),
     name: String(c?.name ?? ""),
     character: String(c?.character ?? ""),
@@ -130,7 +123,7 @@ export async function fetchDetailBundle(mediaType: MediaType, id: number | strin
     recommendations,
     cast,
     trailerYoutubeKey,
-    genres: (detail?.genres ?? []).map((g) => String(g?.name ?? "")).filter(Boolean),
+    genres: (detail?.genres ?? []).map((g: JsonObject) => String(g?.name ?? "")).filter(Boolean),
     runtime: detail?.runtime ?? undefined,
     numberOfSeasons: detail?.number_of_seasons ?? undefined,
   };

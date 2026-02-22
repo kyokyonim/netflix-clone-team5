@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import "./MovieModal.css";
 import useDetailBundle from "@/hooks/useDetailBundle";
 
@@ -46,7 +47,13 @@ export default function MovieModal({ open, item, onClose }) {
 
         <div className="modalHero">
           {item.backdropUrl ? (
-            <img className="modalHeroImg" src={item.backdropUrl} alt={item.title} />
+            <Image
+              className="modalHeroImg"
+              src={item.backdropUrl}
+              alt={item.title}
+              fill
+              sizes="(max-width: 980px) 100vw, 980px"
+            />
           ) : (
             <div className="modalHeroFallback" />
           )}

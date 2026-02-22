@@ -1,8 +1,25 @@
 // TMDB 이미지/데이터 정규화 mapper
 import type { MediaCard, MediaType } from "../types/app";
-import type { TMDBListItem } from "../types/tmdb";
 
 export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/";
+
+type TmdbItem = Record<string, unknown> & {
+  media_type?: string;
+  first_air_date?: string;
+  name?: string;
+  original_name?: string;
+  release_date?: string;
+  title?: string;
+  original_title?: string;
+  id?: number | string;
+  overview?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  vote_average?: number;
+  popularity?: number;
+  vote_count?: number;
+  adult?: boolean;
+};
 
 // TMDB 이미지 URL 생성 (없으면 undefined)
 export function imgUrl(path?: string | null, size: string = "w500"): string | undefined {
@@ -11,7 +28,7 @@ export function imgUrl(path?: string | null, size: string = "w500"): string | un
 }
 
 // TMDB item에서 media type 추론 (반드시 MediaType만 반환)
-export function inferMediaType(item: TMDBListItem): MediaType {
+export function inferMediaType(item: TmdbItem): MediaType {
   const mt = item?.media_type;
   if (mt === "movie" || mt === "tv" || mt === "person") return mt;
   if (item?.first_air_date || item?.name || item?.original_name) return "tv";
@@ -20,7 +37,7 @@ export function inferMediaType(item: TMDBListItem): MediaType {
   return "unknown";
 }
 
-export function toMediaCard(item: TMDBListItem): MediaCard {
+export function toMediaCard(item: TmdbItem): MediaCard {
   const mediaType = inferMediaType(item);
 
   const title: string =
@@ -48,7 +65,7 @@ export function toMediaCard(item: TMDBListItem): MediaCard {
 }
 
 // 배너용(가로 이미지 우선)
-export function toBannerItem(item: TMDBListItem): MediaCard {
+export function toBannerItem(item: TmdbItem): MediaCard {
   const card = toMediaCard(item);
   return {
     ...card,

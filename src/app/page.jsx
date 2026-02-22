@@ -1,26 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { fetchDetailBundle } from "@/api/tmdb";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import useHomeFeed from "@/hooks/useHomeFeed";
+import useHeroTrailer from "@/hooks/useHeroTrailer";
 import Row from "@/components/Row";
 import MovieModal from "@/components/MovieModal";
-
-function getPlayableMediaType(item) {
-  if (!item) return null;
-  if (item.mediaType === "movie" || item.mediaType === "tv") return item.mediaType;
-  return null;
-}
 
 export default function Page() {
   const { hero, sections, loading, error } = useHomeFeed();
 
-  // Trailer
-  const [trailerKey, setTrailerKey] = useState(null);
-  const [isMuted, setIsMuted] = useState(true);
+  // ✅ Trailer logic moved to hook (UI → hooks → api → mapper → TMDB)
+  const { trailerKey, isMuted, setIsMuted, play, close } = useHeroTrailer(hero);
 
   // Modal
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   if (loading) {
     return (
@@ -38,7 +41,7 @@ export default function Page() {
     );
   }
 
-  if (!hero || !sections.length || !sections[0]?.items?.length) {
+  if (!hero || !sections?.length || !sections[0]?.items?.length) {
     return (
       <main style={{ background: "#000", color: "#fff", minHeight: "100vh" }}>
         <div style={{ padding: 60, fontSize: 24 }}>Empty</div>
@@ -46,46 +49,28 @@ export default function Page() {
     );
   }
 
-  const handlePlay = async () => {
-    try {
-      const mediaType = getPlayableMediaType(hero);
-      if (!mediaType) {
-        setTrailerKey(null);
-        return;
-      }
-
-      const detail = await fetchDetailBundle(mediaType, hero.id);
-      setTrailerKey(detail.trailerYoutubeKey ?? null);
-    } catch (e) {
-      console.error(e);
-      setTrailerKey(null);
-    }
-  };
-
-  const handleCloseTrailer = () => setTrailerKey(null);
-
   return (
     <main style={{ background: "#000", minHeight: "100vh" }}>
       {/* HERO */}
       <section
         style={{
           position: "relative",
-          height: "100vh",
-          minHeight: 700,
+          height: isMobile ? "78vh" : "100vh",
+          minHeight: isMobile ? 560 : 700,
           color: "#fff",
           overflow: "hidden",
         }}
       >
-        {/* backgound */}
+        {/* background */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             backgroundImage: hero.backdropUrl ? `url(${hero.backdropUrl})` : "",
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: isMobile ? "center top" : "center",
             backgroundColor: hero.backdropUrl ? undefined : "#111",
-            transform: "scale(1.02)",
+            transform: isMobile ? "scale(1)" : "scale(1.02)",
             filter: "brightness(0.9)",
           }}
         />
@@ -93,7 +78,7 @@ export default function Page() {
         {/* Shadow */}
         <div
           style={{
-            position: "absolute",
+  
             inset: 0,
             background:
               "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0) 100%), linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%)",
@@ -107,15 +92,16 @@ export default function Page() {
             <iframe
               key={`${trailerKey}-${isMuted ? "m1" : "m0"}`}
               title="trailer"
-              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${isMuted ? 1 : 0
-                }&controls=0&playsinline=1&rel=0&modestbranding=1`}
+              src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=${
+                isMuted ? 1 : 0
+              }&controls=0&playsinline=1&rel=0&modestbranding=1`}
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
               style={{ width: "100%", height: "100%", border: 0 }}
             />
 
             <button
-              onClick={handleCloseTrailer}
+              onClick={close}
               style={{
                 position: "absolute",
                 top: 90,
@@ -139,16 +125,16 @@ export default function Page() {
         <div
           style={{
             position: "absolute",
-            left: 60,
-            right: 60,
-            top: 410,
+            left: "clamp(20px, 6vw, 60px)",
+            right: "clamp(20px, 6vw, 60px)",
+            top: isMobile ? "clamp(210px, 42vh, 290px)" : "clamp(280px, 45vh, 410px)",
             zIndex: 3,
           }}
         >
-          <div style={{ maxWidth: 820 }}>
+          <div style={{ maxWidth: "min(820px, 92vw)" }}>
             <h1
               style={{
-                fontSize: 96,
+                fontSize: "clamp(56px, 14vw, 96px)",
                 fontWeight: 900,
                 margin: 0,
                 lineHeight: 0.95,
@@ -161,60 +147,66 @@ export default function Page() {
 
           <div
             style={{
-              marginTop: 24,
+              marginTop: "clamp(14px, 3vw, 24px)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: 16,
+              gap: "clamp(8px, 2vw, 16px)",
             }}
           >
             {/* Play Button */}
-            <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "clamp(8px, 1.8vw, 14px)",
+                alignItems: "center",
+              }}
+            >
               <button
-                onClick={handlePlay}
+                onClick={play}
                 style={{
-                  padding: "12px 26px",
+                  padding: "clamp(8px, 2.2vw, 12px) clamp(14px, 4vw, 26px)",
                   borderRadius: 6,
                   border: "none",
                   fontWeight: 800,
                   cursor: "pointer",
-                  fontSize: 16,
+                  fontSize: "clamp(13px, 2.8vw, 16px)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 10,
+                  gap: "clamp(6px, 1.5vw, 10px)",
                   backgroundColor: "#ffffff",
                   color: "#000",
                 }}
               >
-                <span style={{ fontSize: 18 }}>▶</span> 재생
+                <span style={{ fontSize: "clamp(14px, 3.2vw, 18px)" }}>▶</span> 재생
               </button>
 
               <button
                 onClick={() => setSelectedItem(hero)}
                 style={{
-                  padding: "12px 26px",
+                  padding: "clamp(8px, 2.2vw, 12px) clamp(14px, 4vw, 26px)",
                   borderRadius: 6,
                   background: "rgba(109,109,110,0.7)",
                   color: "#fff",
                   border: "none",
                   fontWeight: 800,
                   cursor: "pointer",
-                  fontSize: 16,
+                  fontSize: "clamp(13px, 2.8vw, 16px)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 10,
+                  gap: "clamp(6px, 1.5vw, 10px)",
                 }}
               >
                 <span
                   style={{
-                    width: 22,
-                    height: 22,
+                    width: "clamp(18px, 4vw, 22px)",
+                    height: "clamp(18px, 4vw, 22px)",
                     borderRadius: "50%",
                     border: "2px solid rgba(255,255,255,0.85)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 14,
+                    fontSize: "clamp(11px, 2.8vw, 14px)",
                     fontWeight: 900,
                   }}
                 >
@@ -239,14 +231,15 @@ export default function Page() {
                   alignItems: "center",
                   justifyContent: "center",
                   padding: 0,
+                  background: "transparent",
                 }}
               >
-                <img
+                <Image
                   src="/image/Sound.png"
                   alt="sound"
+                  width={22}
+                  height={22}
                   style={{
-                    width: 22,
-                    height: 22,
                     objectFit: "contain",
                     display: "block",
                   }}
@@ -284,16 +277,15 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </section>
 
       {/* ROWS */}
-      <section style={{ marginTop: -90, paddingBottom: 60 }}>
+      <section style={{ marginTop: isMobile ? -36 : -90, paddingBottom: 60 }}>
         {sections.map((row) => (
-          <Row key={row.key}>
+          <Row key={row.key ?? row.title}>
             <h2 style={{ color: "#fff", fontSize: 22, margin: "0 0 12px" }}>
               {row.title}
             </h2>
@@ -308,7 +300,7 @@ export default function Page() {
                   title={`${it.title} (${it.mediaType})`}
                 >
                   {it.posterUrl ? (
-                    <img src={it.posterUrl} alt={it.title} />
+                    <Image src={it.posterUrl} alt={it.title} width={170} height={255} />
                   ) : (
                     <div
                       style={{
