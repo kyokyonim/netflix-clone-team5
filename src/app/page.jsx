@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import useHomeFeed from "@/hooks/useHomeFeed";
 import useHeroTrailer from "@/hooks/useHeroTrailer";
 import Row from "@/components/Row";
@@ -218,12 +219,12 @@ export default function Page() {
                   background: "transparent",
                 }}
               >
-                <img
+                <Image
                   src="/image/Sound.png"
                   alt="sound"
+                  width={22}
+                  height={22}
                   style={{
-                    width: 22,
-                    height: 22,
                     objectFit: "contain",
                     display: "block",
                   }}
@@ -284,7 +285,7 @@ export default function Page() {
                   title={`${it.title} (${it.mediaType})`}
                 >
                   {it.posterUrl ? (
-                    <img src={it.posterUrl} alt={it.title} />
+                    <Image src={it.posterUrl} alt={it.title} width={170} height={255} />
                   ) : (
                     <div
                       style={{

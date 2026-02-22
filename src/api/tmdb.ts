@@ -2,22 +2,22 @@
 import axios from "./axios";
 import { toMediaCard, toBannerItem, imgUrl } from "./mapper";
 import type { MediaCard, DetailBundle, MediaType } from "../types/app";
-import type {
-  TMDBListResponse,
-  TMDBListItem,
-  TMDBVideosResponse,
-  TMDBCreditsResponse,
-  TMDBDetail,
-} from "../types/tmdb";
 
-function getResults(data: any): any[] {
-  if (!data) return [];
-  if (Array.isArray(data.results)) return data.results;
+type JsonObject = Record<string, unknown>;
+type QueryParams = Record<string, string | number | boolean | null | undefined>;
+
+function isObject(value: unknown): value is JsonObject {
+  return typeof value === "object" && value !== null;
+}
+
+function getResults(data: unknown): JsonObject[] {
+  if (!isObject(data)) return [];
+  if (Array.isArray(data.results)) return data.results.filter(isObject);
   return [];
 }
 
 // 리스트(섹션) 가져오기 
-export async function fetchList(path: string, params: Record<string, any> = {}): Promise<MediaCard[]> {
+export async function fetchList(path: string, params: QueryParams = {}): Promise<MediaCard[]> {
   const res = await axios.get(path, { params });
   return getResults(res.data).map(toMediaCard);
 }
@@ -84,7 +84,7 @@ export async function fetchDetailBundle(mediaType: MediaType, id: number | strin
   const recommendations: MediaCard[] = (recRes.data?.results ?? []).map(toMediaCard);
 
   const credits = creditsRes.data ?? {};
-  const cast = (credits.cast ?? []).slice(0, 10).map((c: any) => ({
+  const cast = (credits.cast ?? []).slice(0, 10).map((c: JsonObject) => ({
     id: Number(c?.id ?? 0),
     name: String(c?.name ?? ""),
     character: String(c?.character ?? ""),
@@ -123,7 +123,7 @@ export async function fetchDetailBundle(mediaType: MediaType, id: number | strin
     recommendations,
     cast,
     trailerYoutubeKey,
-    genres: (detail?.genres ?? []).map((g: any) => String(g?.name ?? "")).filter(Boolean),
+    genres: (detail?.genres ?? []).map((g: JsonObject) => String(g?.name ?? "")).filter(Boolean),
     runtime: detail?.runtime ?? undefined,
     numberOfSeasons: detail?.number_of_seasons ?? undefined,
   };

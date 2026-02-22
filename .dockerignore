@@ -1,0 +1,29 @@
+# 의존성
+node_modules
+npm-debug.log*
+
+# Next.js 빌드 캐시 / 결과물
+.next
+out
+
+# 환경 변수 (이미지에 포함 금지)
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# 개발 도구
+.vscode
+.idea
+*.md
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# Docker 파일 자체
+Dockerfile
+.dockerignore
