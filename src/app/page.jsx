@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import useHomeFeed from "@/hooks/useHomeFeed";
 import useHeroTrailer from "@/hooks/useHeroTrailer";
@@ -15,6 +15,15 @@ export default function Page() {
 
   // Modal
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const sync = () => setIsMobile(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   if (loading) {
     return (
@@ -46,8 +55,8 @@ export default function Page() {
       <section
         style={{
           position: "relative",
-          height: "100vh",
-          minHeight: 700,
+          height: isMobile ? "78vh" : "100vh",
+          minHeight: isMobile ? 560 : 700,
           color: "#fff",
           overflow: "hidden",
         }}
@@ -59,9 +68,9 @@ export default function Page() {
             inset: 0,
             backgroundImage: hero.backdropUrl ? `url(${hero.backdropUrl})` : "",
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: isMobile ? "center top" : "center",
             backgroundColor: hero.backdropUrl ? undefined : "#111",
-            transform: "scale(1.02)",
+            transform: isMobile ? "scale(1)" : "scale(1.02)",
             filter: "brightness(0.9)",
           }}
         />
@@ -118,7 +127,7 @@ export default function Page() {
             position: "absolute",
             left: "clamp(20px, 6vw, 60px)",
             right: "clamp(20px, 6vw, 60px)",
-            top: "clamp(280px, 45vh, 410px)",
+            top: isMobile ? "clamp(210px, 42vh, 290px)" : "clamp(280px, 45vh, 410px)",
             zIndex: 3,
           }}
         >
@@ -274,7 +283,7 @@ export default function Page() {
       </section>
 
       {/* ROWS */}
-      <section style={{ marginTop: -90, paddingBottom: 60 }}>
+      <section style={{ marginTop: isMobile ? -36 : -90, paddingBottom: 60 }}>
         {sections.map((row) => (
           <Row key={row.key ?? row.title}>
             <h2 style={{ color: "#fff", fontSize: 22, margin: "0 0 12px" }}>
