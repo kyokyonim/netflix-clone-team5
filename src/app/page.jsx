@@ -116,16 +116,16 @@ export default function Page() {
         <div
           style={{
             position: "absolute",
-            left: 60,
-            right: 60,
-            top: 410,
+            left: "clamp(20px, 6vw, 60px)",
+            right: "clamp(20px, 6vw, 60px)",
+            top: "clamp(280px, 45vh, 410px)",
             zIndex: 3,
           }}
         >
-          <div style={{ maxWidth: 820 }}>
+          <div style={{ maxWidth: "min(820px, 92vw)" }}>
             <h1
               style={{
-                fontSize: 96,
+                fontSize: "clamp(56px, 14vw, 96px)",
                 fontWeight: 900,
                 margin: 0,
                 lineHeight: 0.95,
