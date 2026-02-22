@@ -138,60 +138,66 @@ export default function Page() {
 
           <div
             style={{
-              marginTop: 24,
+              marginTop: "clamp(14px, 3vw, 24px)",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              gap: 16,
+              gap: "clamp(8px, 2vw, 16px)",
             }}
           >
             {/* Play Button */}
-            <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "clamp(8px, 1.8vw, 14px)",
+                alignItems: "center",
+              }}
+            >
               <button
                 onClick={play}
                 style={{
-                  padding: "12px 26px",
+                  padding: "clamp(8px, 2.2vw, 12px) clamp(14px, 4vw, 26px)",
                   borderRadius: 6,
                   border: "none",
                   fontWeight: 800,
                   cursor: "pointer",
-                  fontSize: 16,
+                  fontSize: "clamp(13px, 2.8vw, 16px)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 10,
+                  gap: "clamp(6px, 1.5vw, 10px)",
                   backgroundColor: "#ffffff",
                   color: "#000",
                 }}
               >
-                <span style={{ fontSize: 18 }}>▶</span> 재생
+                <span style={{ fontSize: "clamp(14px, 3.2vw, 18px)" }}>▶</span> 재생
               </button>
 
               <button
                 onClick={() => setSelectedItem(hero)}
                 style={{
-                  padding: "12px 26px",
+                  padding: "clamp(8px, 2.2vw, 12px) clamp(14px, 4vw, 26px)",
                   borderRadius: 6,
                   background: "rgba(109,109,110,0.7)",
                   color: "#fff",
                   border: "none",
                   fontWeight: 800,
                   cursor: "pointer",
-                  fontSize: 16,
+                  fontSize: "clamp(13px, 2.8vw, 16px)",
                   display: "flex",
                   alignItems: "center",
-                  gap: 10,
+                  gap: "clamp(6px, 1.5vw, 10px)",
                 }}
               >
                 <span
                   style={{
-                    width: 22,
-                    height: 22,
+                    width: "clamp(18px, 4vw, 22px)",
+                    height: "clamp(18px, 4vw, 22px)",
                     borderRadius: "50%",
                     border: "2px solid rgba(255,255,255,0.85)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 14,
+                    fontSize: "clamp(11px, 2.8vw, 14px)",
                     fontWeight: 900,
                   }}
                 >
