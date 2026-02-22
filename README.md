@@ -31,6 +31,7 @@ Row 카드 섹션 가림 이슈 및 헤더 모바일 대응 관련 팀원 공유
 - `src/api/mapper.ts`, `src/api/requests.js`, `src/api/tmdb.ts`
   - 홈 화면 데이터 매핑/요청 로직 리팩터링 반영
 
+![🔸모바일 반응형 수정 결과🔸](docs/screenshot/mobile-hero-updated.png)
 ---
 
 ## 🛠 Tech Stack
@@ -41,7 +42,57 @@ Row 카드 섹션 가림 이슈 및 헤더 모바일 대응 관련 팀원 공유
 - **Network:** Axios (TMDB API)
 - **Media:** YouTube iframe (트레일러 재생)
 - **Styling:** Component-scoped CSS (`Nav.css`, `Row.css`, `MovieModal.css`)
-- **Infra:** Docker, AWS S3/EC2 (예정)
+- **Infra:** Docker, AWS EC2
+
+---
+
+## 🚀 Run Locally
+
+### 1) 의존성 설치
+```bash
+npm install
+```
+
+### 2) 개발 서버 실행
+```bash
+npm run dev
+```
+
+### 3) 프로덕션 빌드/실행
+```bash
+npm run build
+npm run start
+```
+
+---
+
+## 🔐 Environment Variables
+
+`.env.local` 파일에 아래 값을 설정합니다.
+
+```bash
+NEXT_PUBLIC_TMDB_API_KEY=YOUR_TMDB_API_KEY
+```
+
+`.env.example`를 참고해 동일한 키 이름을 사용하세요.
+
+---
+
+## 🐳 Deployment
+
+### Docker Image
+- Repository: `kyokyonim/netflix-clone-team5`
+- Tag: `latest`
+
+### 운영 주소
+- `http://13.125.171.188/`
+
+### EC2 재배포 명령 (서버에서 실행)
+```bash
+docker pull kyokyonim/netflix-clone-team5:latest
+docker rm -f netflix-clone || true
+docker run -d --name netflix-clone -p 80:3000 --restart unless-stopped kyokyonim/netflix-clone-team5:latest
+```
 
 ---
 
@@ -65,6 +116,31 @@ Row 카드 섹션 가림 이슈 및 헤더 모바일 대응 관련 팀원 공유
 - 이미지 누락 시 Placeholder UI 표시
 - `loading / error / empty` 상태 명시 처리
 - `movie / tv` 공통 `MediaCard` 인터페이스 사용
+
+---
+
+## 🧯 Troubleshooting
+
+### Docker 데몬 연결 에러
+에러: `Cannot connect to the Docker daemon ...`
+
+```bash
+open -a "Docker Desktop"
+docker info
+```
+
+`docker info`에서 `Server` 정보가 보이면 정상입니다.
+
+### AWS EC2 인스턴스가 안 보일 때
+- 리전이 맞는지 확인 (`ap-northeast-2` 등)
+- 로그인한 AWS 계정이 배포에 사용한 계정인지 확인
+
+---
+
+## 🌿 Branch Policy
+
+- 기능/수정은 `develop`에서 검증
+- 팀 확인 완료 후 `main`으로 머지
 
 ---
 
